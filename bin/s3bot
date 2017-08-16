@@ -1,0 +1,5 @@
+#!/usr/bin/env python3
+
+# -*- mode: python -*-
+
+import s3bot
