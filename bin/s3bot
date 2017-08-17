@@ -2,4 +2,7 @@
 
 # -*- mode: python -*-
 
-import s3bot
+from s3bot.cli.main import main
+
+if __name__ == "__main__":
+    main()
