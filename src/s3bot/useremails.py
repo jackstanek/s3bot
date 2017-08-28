@@ -5,6 +5,14 @@ import os
 
 from s3bot import SHARED_BASE
 
+# pylint: disable=too-few-public-methods
+class UserEmailRecordDialect(csv.Dialect):
+    """Simple dialect for the email record file."""
+    delimiter = " "
+    lineterminator = "\n"
+    quoting = csv.QUOTE_NONE
+
+
 class UserEmailRecord(dict):
     """A record of all user emails known to the system. This is a subclass
     of dict, so all dict methods are available. Note that it is not
@@ -13,19 +21,25 @@ class UserEmailRecord(dict):
     """
 
     email_record_path = os.path.join(SHARED_BASE, "emails.txt")
+    fieldnames = ("user", "email")
 
     def __init__(self):
         super().__init__()
 
         with open(self.email_record_path, "r") as email_file:
-            reader = csv.reader(email_file, delimiter=' ')
+            reader = csv.DictReader(email_file,
+                                    fieldnames=self.fieldnames,
+                                    dialect=UserEmailRecordDialect)
             for row in reader:
-                user, email = row
+                user, email = row["user"], row["email"]
                 self[user] = email
 
     def dump(self):
         """Dump the contents of the email record to disk."""
         with open(self.email_record_path, "w") as email_file:
-            writer = csv.writer(email_file, delimiter=' ')
+            writer = csv.DictWriter(email_file,
+                                    fieldnames=self.fieldnames,
+                                    dialect=UserEmailRecordDialect)
+
             for user, email in self.items():
-                writer.writerow([user, email])
+                writer.writerow({user: email})
