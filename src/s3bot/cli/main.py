@@ -12,6 +12,8 @@ def build_s3bot_parser():
 
     freeze_parser = subparsers.add_parser("freeze",
                                           help="freeze a file or directory")
+    ls_parser =     subparsers.add_parser("ls",
+                                          help="list the contents of S3")
     freeze_parser.add_argument("path",
                                help="path to freeze",
                                type=str)
@@ -23,8 +25,7 @@ def main():
     parser = build_s3bot_parser()
     argmap = parser.parse_args()
 
-    subcommand = argmap.subcommand
     kwargs = vars(argmap)
-    kwargs.pop("subcommand")
+    subcommand = kwargs.pop("subcommand")
 
     getattr(commands, subcommand)(**kwargs)
