@@ -12,11 +12,17 @@ def build_s3bot_parser():
 
     freeze_parser = subparsers.add_parser("freeze",
                                           help="freeze a file or directory")
-    ls_parser =     subparsers.add_parser("ls",
+    ls_parser     = subparsers.add_parser("ls",
                                           help="list the contents of S3")
+
     freeze_parser.add_argument("path",
                                help="path to freeze",
                                type=str)
+    ls_parser.add_argument("prefix",
+                           help="prefix of paths in the bucket",
+                           type=str,
+                           nargs="*",
+                           default=str())
 
     return parser
 

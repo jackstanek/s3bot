@@ -6,18 +6,20 @@ from s3bot.s3_interface import S3Wrapper
 # Save a stack frame, don't need a wrapper function.
 freeze = s3bot.freeze.freeze
 
-def ls(*args):
+def ls(**kwargs):
     """List the contents of the default bucket, with prefixes in the
     args."""
 
     s3 = S3Wrapper()
-    contents = dict((arg, '') for arg in args)
+    contents = dict((arg, '') for arg in kwargs["prefix"])
 
-    if args:
-        for arg in args:
-            contents[arg] = list(s3.bucket_contents(arg))
+    if "prefix" in kwargs:
+        if kwargs["prefix"]:
+            for arg in kwargs["prefix"]:
+                contents[arg] = list(s3.bucket_contents(arg))
+        else:
+            contents[''] = list(s3.bucket_contents(''))
     else:
-        # empty prefix; root of the bucket
         contents[''] = list(s3.bucket_contents(''))
 
     for pfx, cnts in contents.items():
